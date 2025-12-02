@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaHome, FaBook, FaHeart, FaSearch, FaPlus, FaTimes } from 'react-icons/fa';
+import { FaHome, FaHeart, FaSearch, FaPlus, FaTimes } from 'react-icons/fa';
 
 function Navbar({ onAddRecipeClick, currentPage, onNavigate, onSearch, searchQuery = '' }) {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);

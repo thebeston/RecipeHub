@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import RecipeCard from './RecipeCard';
 import RecipeDetail from './RecipeDetail';
-import { FaSpinner, FaHeart } from 'react-icons/fa';
+import { FaHeart } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { API_ENDPOINTS } from '../config/api';
 

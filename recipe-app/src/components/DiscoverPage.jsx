@@ -37,6 +37,7 @@ function DiscoverPage({ onAddRecipeClick, currentPage, onNavigate, onSearch, sea
 
   useEffect(() => {
     applyFilters();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, recipes, searchQuery]); 
 
   const fetchExistingRecipes = async () => {

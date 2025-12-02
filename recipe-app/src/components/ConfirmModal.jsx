@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaExclamationTriangle, FaTimes } from 'react-icons/fa';
+import { FaExclamationTriangle } from 'react-icons/fa';
 
 function ConfirmModal({ show, onConfirm, onCancel, title, message, confirmText = "Delete", cancelText = "Cancel" }) {
   if (!show) return null;
