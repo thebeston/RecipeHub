@@ -1,13 +1,7 @@
 {
-  "version": 2,
-  "name": "recipe-hub",
-  "builds": [
-    {
-      "src": "recipe-app/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "recipe-app/build"
-      }
-    }
-  ]
+  "buildCommand": "cd recipe-app && npm install && npm run build",
+  "outputDirectory": "recipe-app/build",
+  "installCommand": "cd recipe-app && npm install",
+  "devCommand": "cd recipe-app && npm start",
+  "framework": "create-react-app"
 }
