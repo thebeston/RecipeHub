@@ -3,6 +3,7 @@ import Navbar from './Navbar';
 import RecipeDetail from './RecipeDetail';
 import { FaSpinner, FaExclamationTriangle, FaClock, FaLeaf, FaPlus, FaSearch, FaEye } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import { API_ENDPOINTS } from '../config/api';
 
 const stripHtmlTags = (html) => {
   if (!html) return '';
@@ -38,7 +39,7 @@ function DiscoverPage({ onAddRecipeClick, currentPage, onNavigate, onSearch, sea
 
   const fetchExistingRecipes = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/recipes');
+      const response = await fetch(API_ENDPOINTS.getAllRecipes);
       if (response.ok) {
         const data = await response.json();
 
@@ -58,7 +59,7 @@ function DiscoverPage({ onAddRecipeClick, currentPage, onNavigate, onSearch, sea
       setError(null);
 
       const response = await fetch(
-        `http://localhost:5000/api/spoonacular/recipes/random?number=50`
+        `${API_ENDPOINTS.getSpoonacularRecipes}?number=50`
       );
 
       if (!response.ok) {
@@ -197,7 +198,7 @@ function DiscoverPage({ onAddRecipeClick, currentPage, onNavigate, onSearch, sea
         imageUrl: spoonacularRecipe.image || '',
       };
 
-      const response = await fetch('http://localhost:5000/api/recipes', {
+      const response = await fetch(API_ENDPOINTS.createRecipe, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

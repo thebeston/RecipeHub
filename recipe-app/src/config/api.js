@@ -1,7 +1,7 @@
 // API Configuration
 // This file centralizes API URL configuration for easy deployment
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://recipe-miwc.onrender.com';
 
 export const API_ENDPOINTS = {
   // Recipe CRUD operations

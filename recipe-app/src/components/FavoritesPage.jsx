@@ -4,6 +4,7 @@ import RecipeCard from './RecipeCard';
 import RecipeDetail from './RecipeDetail';
 import { FaSpinner, FaHeart } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import { API_ENDPOINTS } from '../config/api';
 
 function FavoritesPage({ onAddRecipeClick, onEditRecipe, favorites, onToggleFavorite, currentPage, onNavigate, onSearch, searchQuery: propSearchQuery }) {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
@@ -57,7 +58,7 @@ function FavoritesPage({ onAddRecipeClick, onEditRecipe, favorites, onToggleFavo
 
   const handleDeleteRecipe = async (recipeId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/recipes/${recipeId}`, {
+      const response = await fetch(API_ENDPOINTS.deleteRecipe(recipeId), {
         method: 'DELETE',
       });
 

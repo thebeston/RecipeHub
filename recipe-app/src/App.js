@@ -6,6 +6,7 @@ import DiscoverPage from './components/DiscoverPage';
 import RecipeForm from './components/RecipeForm';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { API_ENDPOINTS } from './config/api';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -32,7 +33,7 @@ function App() {
 
   const fetchAllRecipes = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/recipes');
+      const response = await fetch(API_ENDPOINTS.getAllRecipes);
       if (response.ok) {
         const data = await response.json();
         setAllRecipes(data.data || []);
@@ -90,8 +91,8 @@ function App() {
     try {
       const isEditing = editingRecipe !== null;
       const url = isEditing 
-        ? `http://localhost:5000/api/recipes/${editingRecipe._id}`
-        : 'http://localhost:5000/api/recipes';
+        ? API_ENDPOINTS.updateRecipe(editingRecipe._id)
+        : API_ENDPOINTS.createRecipe;
       
       const method = isEditing ? 'PUT' : 'POST';
 
