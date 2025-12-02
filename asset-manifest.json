@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/RecipeHub/static/css/main.335187fa.css",
+    "main.js": "/RecipeHub/static/js/main.a3737eec.js",
+    "static/js/453.afec9b7e.chunk.js": "/RecipeHub/static/js/453.afec9b7e.chunk.js",
+    "index.html": "/RecipeHub/index.html",
+    "main.335187fa.css.map": "/RecipeHub/static/css/main.335187fa.css.map",
+    "main.a3737eec.js.map": "/RecipeHub/static/js/main.a3737eec.js.map",
+    "453.afec9b7e.chunk.js.map": "/RecipeHub/static/js/453.afec9b7e.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.335187fa.css",
+    "static/js/main.a3737eec.js"
+  ]
+}
