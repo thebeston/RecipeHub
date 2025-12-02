@@ -3,7 +3,7 @@ import Navbar from './Navbar';
 import ConfirmModal from './ConfirmModal';
 import { FaClock, FaLeaf, FaHeart, FaRegHeart, FaEdit, FaArrowLeft, FaTrash } from 'react-icons/fa';
 
-function RecipeDetail({ recipe, onBack, onEdit, onDelete, isFavorite, onToggleFavorite }) {
+function RecipeDetail({ recipe, onBack, onEdit, onDelete, isFavorite, onToggleFavorite, showActions = true, showDietaryTags = true }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleToggleFavorite = () => {
@@ -83,29 +83,31 @@ function RecipeDetail({ recipe, onBack, onEdit, onDelete, isFavorite, onToggleFa
                   
                   <div className="d-flex justify-content-between align-items-start mb-3">
                     <h1 className="card-title fw-bold mb-0">{recipe.title}</h1>
-                    <div className="d-flex gap-2">
-                      <button
-                        className="btn btn-outline-danger"
-                        onClick={handleToggleFavorite}
-                        title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-                      >
-                        {isFavorite ? <FaHeart /> : <FaRegHeart />}
-                      </button>
-                      <button
-                        className="btn btn-outline-primary"
-                        onClick={() => onEdit(recipe)}
-                        title="Edit recipe"
-                      >
-                        <FaEdit />
-                      </button>
-                      <button
-                        className="btn btn-outline-danger"
-                        onClick={handleDeleteClick}
-                        title="Delete recipe"
-                      >
-                        <FaTrash />
-                      </button>
-                    </div>
+                    {showActions && (
+                      <div className="d-flex gap-2">
+                        <button
+                          className="btn btn-outline-danger"
+                          onClick={handleToggleFavorite}
+                          title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                        >
+                          {isFavorite ? <FaHeart /> : <FaRegHeart />}
+                        </button>
+                        <button
+                          className="btn btn-outline-primary"
+                          onClick={() => onEdit(recipe)}
+                          title="Edit recipe"
+                        >
+                          <FaEdit />
+                        </button>
+                        <button
+                          className="btn btn-outline-danger"
+                          onClick={handleDeleteClick}
+                          title="Delete recipe"
+                        >
+                          <FaTrash />
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   <div className="mb-4">
@@ -115,7 +117,7 @@ function RecipeDetail({ recipe, onBack, onEdit, onDelete, isFavorite, onToggleFa
                     </span>
                   </div>
 
-                  {activeDietaryRestrictions.length > 0 && (
+                  {showDietaryTags && activeDietaryRestrictions.length > 0 && (
                     <div className="mb-4">
                       <h5 className="fw-bold mb-3">Dietary Information</h5>
                       <div className="d-flex flex-wrap gap-2">

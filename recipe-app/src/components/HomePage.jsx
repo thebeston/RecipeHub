@@ -143,6 +143,8 @@ function HomePage({ onAddRecipeClick, onEditRecipe, refreshTrigger, favorites, o
         onDelete={handleDeleteFromDetail}
         isFavorite={favorites.includes(selectedRecipe._id)}
         onToggleFavorite={onToggleFavorite}
+        showActions={false}
+        showDietaryTags={false}
       />
     );
   }
