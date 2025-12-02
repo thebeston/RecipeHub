@@ -1,5 +1,13 @@
 {
-  "buildCommand": "npm install --prefix recipe-app && npm run build --prefix recipe-app",
-  "outputDirectory": "recipe-app/build",
-  "installCommand": "npm install --prefix recipe-app"
+  "version": 2,
+  "name": "recipe-hub",
+  "builds": [
+    {
+      "src": "recipe-app/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "recipe-app/build"
+      }
+    }
+  ]
 }
