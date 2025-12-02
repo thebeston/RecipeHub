@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
-import { FaHome, FaBook, FaHeart, FaSearch, FaPlus } from 'react-icons/fa';
+import { FaHome, FaBook, FaHeart, FaSearch, FaPlus, FaTimes } from 'react-icons/fa';
 
-function Navbar({ onAddRecipeClick, currentPage, onNavigate }) {
-  const [searchQuery, setSearchQuery] = useState('');
+function Navbar({ onAddRecipeClick, currentPage, onNavigate, onSearch, searchQuery = '' }) {
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log('Searching for:', searchQuery);
-    // Add your search logic here
+    if (onSearch) {
+      onSearch(localSearchQuery);
+    }
+  };
+
+  const handleClearSearch = () => {
+    setLocalSearchQuery('');
+    if (onSearch) {
+      onSearch('');
+    }
   };
 
   return (
@@ -42,11 +50,11 @@ function Navbar({ onAddRecipeClick, currentPage, onNavigate }) {
             </li>
             <li className="nav-item">
               <button 
-                className={`nav-link ${currentPage === 'recipes' ? 'active' : ''}`}
-                onClick={() => onNavigate && onNavigate('recipes')}
+                className={`nav-link ${currentPage === 'discover' ? 'active' : ''}`}
+                onClick={() => onNavigate && onNavigate('discover')}
                 style={{ background: 'none', border: 'none', cursor: 'pointer' }}
               >
-                <FaBook className="me-1" /> My Recipes
+                <FaSearch className="me-1" /> Discover
               </button>
             </li>
             <li className="nav-item">
@@ -61,26 +69,39 @@ function Navbar({ onAddRecipeClick, currentPage, onNavigate }) {
           </ul>
 
           <form className="d-flex me-3" onSubmit={handleSearch}>
-            <input
-              className="form-control me-2"
-              type="search"
-              placeholder="Search recipes..."
-              aria-label="Search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={{ minWidth: '250px' }}
-            />
-            <button className="btn btn-outline-light" type="submit">
-              <FaSearch className="me-1" /> Search
-            </button>
+            <div className="input-group" style={{ minWidth: '250px' }}>
+              <input
+                className="form-control"
+                type="search"
+                placeholder="Search recipes..."
+                aria-label="Search"
+                value={localSearchQuery}
+                onChange={(e) => setLocalSearchQuery(e.target.value)}
+              />
+              {localSearchQuery && (
+                <button 
+                  className="btn btn-outline-light" 
+                  type="button"
+                  onClick={handleClearSearch}
+                  title="Clear search"
+                >
+                  <FaTimes />
+                </button>
+              )}
+              <button className="btn btn-outline-light" type="submit">
+                <FaSearch />
+              </button>
+            </div>
           </form>
 
-          <button
-            className="btn btn-warning fw-bold"
-            onClick={onAddRecipeClick}
-          >
-            <FaPlus className="me-1" /> Add Recipe
-          </button>
+          {currentPage === 'home' && (
+            <button
+              className="btn btn-warning fw-bold"
+              onClick={onAddRecipeClick}
+            >
+              <FaPlus className="me-1" /> Add Recipe
+            </button>
+          )}
         </div>
       </div>
     </nav>

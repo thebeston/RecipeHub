@@ -1,7 +1,10 @@
-import React from 'react';
-import { FaClock, FaLeaf, FaHeart, FaRegHeart, FaEdit } from 'react-icons/fa';
+import React, { useState } from 'react';
+import { FaClock, FaLeaf, FaHeart, FaRegHeart, FaEdit, FaTrash, FaEye } from 'react-icons/fa';
+import ConfirmModal from './ConfirmModal';
 
-function RecipeCard({ recipe, onEdit, isFavorite = false, onToggleFavorite }) {
+function RecipeCard({ recipe, onEdit, onDelete, onViewRecipe, isFavorite = false, onToggleFavorite }) {
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
   const handleToggleFavorite = (e) => {
     e.stopPropagation();
     if (onToggleFavorite) {
@@ -9,14 +12,35 @@ function RecipeCard({ recipe, onEdit, isFavorite = false, onToggleFavorite }) {
     }
   };
 
-  // Get active dietary restrictions
+  const handleDeleteClick = (e) => {
+    e.stopPropagation();
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = () => {
+    setShowDeleteModal(false);
+    onDelete(recipe._id);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
+  };
+
+  const handleEdit = (e) => {
+    e.stopPropagation();
+    onEdit(recipe);
+  };
+
+  const handleViewRecipe = () => {
+    onViewRecipe(recipe);
+  };
+
   const activeDietaryRestrictions = recipe.dietaryRestrictions
     ? Object.keys(recipe.dietaryRestrictions).filter(
         (key) => recipe.dietaryRestrictions[key] === true
       )
     : [];
 
-  // Format dietary restriction names
   const formatRestriction = (restriction) => {
     return restriction
       .replace(/([A-Z])/g, ' $1')
@@ -25,26 +49,41 @@ function RecipeCard({ recipe, onEdit, isFavorite = false, onToggleFavorite }) {
   };
 
   return (
-    <div className="card h-100 shadow-sm hover-shadow transition" style={{ cursor: 'pointer' }}>
-      {/* Card Image Placeholder */}
-      <div
-        className="card-img-top bg-gradient"
-        style={{
-          height: '200px',
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'white',
-          fontSize: '3rem',
-        }}
-      >
-        🍳
-      </div>
+    <div className="card h-100 shadow-sm hover-shadow transition" style={{ position: 'relative' }}>
+      
+      {recipe.imageUrl ? (
+        <img
+          src={recipe.imageUrl}
+          alt={recipe.title}
+          className="card-img-top"
+          style={{
+            height: '200px',
+            objectFit: 'cover',
+            cursor: 'pointer',
+          }}
+          onClick={handleViewRecipe}
+        />
+      ) : (
+        <div
+          className="card-img-top bg-gradient"
+          style={{
+            height: '200px',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+            fontSize: '3rem',
+            cursor: 'pointer',
+          }}
+          onClick={handleViewRecipe}
+        >
+          🍳
+        </div>
+      )}
 
-      {/* Card Body */}
       <div className="card-body d-flex flex-column">
-        {/* Title */}
+        
         <div className="d-flex justify-content-between align-items-start mb-2">
           <h5 className="card-title fw-bold mb-0 flex-grow-1">{recipe.title}</h5>
           <button
@@ -57,7 +96,6 @@ function RecipeCard({ recipe, onEdit, isFavorite = false, onToggleFavorite }) {
           </button>
         </div>
 
-        {/* Duration */}
         <div className="mb-3">
           <span className="badge bg-primary">
             <FaClock className="me-1" />
@@ -65,7 +103,6 @@ function RecipeCard({ recipe, onEdit, isFavorite = false, onToggleFavorite }) {
           </span>
         </div>
 
-        {/* Dietary Restrictions */}
         {activeDietaryRestrictions.length > 0 && (
           <div className="mb-3">
             <div className="d-flex flex-wrap gap-1">
@@ -87,7 +124,6 @@ function RecipeCard({ recipe, onEdit, isFavorite = false, onToggleFavorite }) {
           </div>
         )}
 
-        {/* Ingredients Preview */}
         <div className="mb-3 flex-grow-1">
           <h6 className="text-muted small mb-2">Ingredients:</h6>
           <ul className="small text-muted mb-0 ps-3">
@@ -100,32 +136,45 @@ function RecipeCard({ recipe, onEdit, isFavorite = false, onToggleFavorite }) {
           </ul>
         </div>
 
-        {/* Instructions Preview */}
-        <p className="card-text text-muted small mb-3">
-          {recipe.instructions.substring(0, 100)}
-          {recipe.instructions.length > 100 && '...'}
-        </p>
-
-        {/* Action Buttons */}
         <div className="d-grid gap-2">
+          <button className="btn btn-primary" onClick={handleViewRecipe}>
+            <FaEye className="me-2" />
+            View Recipe
+          </button>
           <div className="btn-group" role="group">
-            <button className="btn btn-primary">View Recipe</button>
             <button 
               className="btn btn-outline-primary"
-              onClick={() => onEdit(recipe)}
+              onClick={handleEdit}
+              title="Edit recipe"
             >
-              <FaEdit />
+              <FaEdit className="me-1" /> Edit
+            </button>
+            <button 
+              className="btn btn-outline-danger"
+              onClick={handleDeleteClick}
+              title="Delete recipe"
+            >
+              <FaTrash className="me-1" /> Delete
             </button>
           </div>
         </div>
       </div>
 
-      {/* Card Footer */}
       <div className="card-footer bg-transparent border-top-0">
         <small className="text-muted">
           Added {new Date(recipe.createdAt).toLocaleDateString()}
         </small>
       </div>
+
+      <ConfirmModal
+        show={showDeleteModal}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        title="Delete Recipe"
+        message={`Are you sure you want to delete "${recipe.title}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
 
       <style jsx>{`
         .hover-shadow {

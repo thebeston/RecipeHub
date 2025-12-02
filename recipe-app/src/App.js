@@ -2,7 +2,10 @@ import './App.css';
 import React, { useState, useEffect } from 'react';
 import HomePage from './components/HomePage';
 import FavoritesPage from './components/FavoritesPage';
+import DiscoverPage from './components/DiscoverPage';
 import RecipeForm from './components/RecipeForm';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -14,8 +17,8 @@ function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [favorites, setFavorites] = useState([]);
   const [allRecipes, setAllRecipes] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // Load favorites from localStorage
   useEffect(() => {
     const savedFavorites = localStorage.getItem('favoriteRecipes');
     if (savedFavorites) {
@@ -23,7 +26,6 @@ function App() {
     }
   }, []);
 
-  // Fetch all recipes
   useEffect(() => {
     fetchAllRecipes();
   }, [refreshRecipes]);
@@ -57,6 +59,11 @@ function App() {
 
   const handleNavigate = (page) => {
     setCurrentPage(page);
+    setSearchQuery(''); 
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
   };
 
   const handleToggleFavorite = (recipeId) => {
@@ -67,7 +74,7 @@ function App() {
       } else {
         newFavorites = [...prevFavorites, recipeId];
       }
-      // Save to localStorage
+
       localStorage.setItem('favoriteRecipes', JSON.stringify(newFavorites));
       return newFavorites;
     });
@@ -78,6 +85,8 @@ function App() {
   };
 
   const handleRecipeSubmit = async (recipeData) => {
+    const { toast } = await import('react-toastify');
+    
     try {
       const isEditing = editingRecipe !== null;
       const url = isEditing 
@@ -97,28 +106,50 @@ function App() {
       const result = await response.json();
 
       if (result.success) {
-        alert(isEditing ? 'Recipe updated successfully!' : 'Recipe created successfully!');
+        toast.success(isEditing ? 'Recipe updated successfully!' : 'Recipe created successfully!', {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
         setShowForm(false);
         setEditingRecipe(null);
-        // Trigger refresh of recipes list
+
         setRefreshRecipes(prev => prev + 1);
       } else {
-        alert('Error saving recipe: ' + result.error);
+        toast.error('Error saving recipe: ' + result.error, {
+          position: "top-right",
+          autoClose: 3000,
+        });
       }
     } catch (error) {
       console.error('Error submitting recipe:', error);
-      alert('Failed to save recipe. Please try again.');
+      toast.error('Failed to save recipe. Please try again.', {
+        position: "top-right",
+        autoClose: 3000,
+      });
     }
   };
 
   return (
     <div className="App">
+      <ToastContainer />
       {showForm ? (
         <RecipeForm 
           mode={editingRecipe ? 'edit' : 'create'}
           initialData={editingRecipe}
           onSubmit={handleRecipeSubmit} 
           onCancel={handleCloseForm} 
+        />
+      ) : currentPage === 'discover' ? (
+        <DiscoverPage
+          onAddRecipeClick={handleShowForm}
+          currentPage={currentPage}
+          onNavigate={handleNavigate}
+          onSearch={handleSearch}
+          searchQuery={searchQuery}
         />
       ) : currentPage === 'favorites' ? (
         <FavoritesPage
@@ -128,6 +159,8 @@ function App() {
           onToggleFavorite={handleToggleFavorite}
           currentPage={currentPage}
           onNavigate={handleNavigate}
+          onSearch={handleSearch}
+          searchQuery={searchQuery}
         />
       ) : (
         <HomePage 
@@ -138,6 +171,8 @@ function App() {
           onToggleFavorite={handleToggleFavorite}
           currentPage={currentPage}
           onNavigate={handleNavigate}
+          onSearch={handleSearch}
+          searchQuery={searchQuery}
         />
       )}
     </div>
