@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import RecipeDetail from './RecipeDetail';
-import { FaSpinner, FaExclamationTriangle, FaClock, FaLeaf, FaPlus, FaSearch, FaEye } from 'react-icons/fa';
+import { FaSpinner, FaExclamationTriangle, FaClock, FaLeaf, FaPlus, FaSearch, FaEye, FaHeart, FaRegHeart } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { API_ENDPOINTS } from '../config/api';
 
@@ -13,7 +13,7 @@ const stripHtmlTags = (html) => {
   return tmp.textContent || tmp.innerText || '';
 };
 
-function DiscoverPage({ onAddRecipeClick, currentPage, onNavigate, onSearch, searchQuery }) {
+function DiscoverPage({ onAddRecipeClick, currentPage, onNavigate, onSearch, searchQuery, favorites = [], onToggleFavorite }) {
   const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -554,7 +554,23 @@ function DiscoverPage({ onAddRecipeClick, currentPage, onNavigate, onSearch, sea
                   />
 
                   <div className="card-body d-flex flex-column">
-                    <h5 className="card-title fw-bold mb-3">{recipe.title}</h5>
+                    <div className="d-flex justify-content-between align-items-start mb-2">
+                      <h5 className="card-title fw-bold mb-0 flex-grow-1">{recipe.title}</h5>
+                      <button
+                        className="btn btn-link text-danger p-0 ms-2"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const recipeId = `spoonacular-${recipe.id}`;
+                          if (onToggleFavorite) {
+                            onToggleFavorite(recipeId);
+                          }
+                        }}
+                        style={{ fontSize: '1.5rem' }}
+                        title={favorites.includes(`spoonacular-${recipe.id}`) ? 'Remove from favorites' : 'Add to favorites'}
+                      >
+                        {favorites.includes(`spoonacular-${recipe.id}`) ? <FaHeart /> : <FaRegHeart />}
+                      </button>
+                    </div>
 
                     <div className="mb-3">
                       <span className="badge bg-primary">

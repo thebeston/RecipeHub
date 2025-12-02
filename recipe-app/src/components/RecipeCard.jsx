@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { FaClock, FaLeaf, FaHeart, FaRegHeart, FaEdit, FaTrash, FaEye } from 'react-icons/fa';
+import { FaClock, FaLeaf, FaHeart, FaRegHeart, FaEdit, FaTrash, FaEye, FaPlus } from 'react-icons/fa';
 import ConfirmModal from './ConfirmModal';
 
-function RecipeCard({ recipe, onEdit, onDelete, onViewRecipe, isFavorite = false, onToggleFavorite }) {
+function RecipeCard({ recipe, onEdit, onDelete, onViewRecipe, isFavorite = false, onToggleFavorite, showEditDelete = true, onAddToCollection, isInCollection = false }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleToggleFavorite = (e) => {
@@ -141,22 +141,37 @@ function RecipeCard({ recipe, onEdit, onDelete, onViewRecipe, isFavorite = false
             <FaEye className="me-2" />
             View Recipe
           </button>
-          <div className="btn-group" role="group">
-            <button 
-              className="btn btn-outline-primary"
-              onClick={handleEdit}
-              title="Edit recipe"
-            >
-              <FaEdit className="me-1" /> Edit
-            </button>
-            <button 
-              className="btn btn-outline-danger"
-              onClick={handleDeleteClick}
-              title="Delete recipe"
-            >
-              <FaTrash className="me-1" /> Delete
-            </button>
-          </div>
+          {showEditDelete ? (
+            <div className="btn-group" role="group">
+              <button 
+                className="btn btn-outline-primary"
+                onClick={handleEdit}
+                title="Edit recipe"
+              >
+                <FaEdit className="me-1" /> Edit
+              </button>
+              <button 
+                className="btn btn-outline-danger"
+                onClick={handleDeleteClick}
+                title="Delete recipe"
+              >
+                <FaTrash className="me-1" /> Delete
+              </button>
+            </div>
+          ) : (
+            !isInCollection && onAddToCollection && (
+              <button 
+                className="btn btn-success"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onAddToCollection(recipe);
+                }}
+                title="Add to your collection"
+              >
+                <FaPlus className="me-1" /> Add to Collection
+              </button>
+            )
+          )}
         </div>
       </div>
 

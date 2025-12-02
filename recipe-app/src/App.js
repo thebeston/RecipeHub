@@ -151,6 +151,8 @@ function App() {
           onNavigate={handleNavigate}
           onSearch={handleSearch}
           searchQuery={searchQuery}
+          favorites={favorites}
+          onToggleFavorite={handleToggleFavorite}
         />
       ) : currentPage === 'favorites' ? (
         <FavoritesPage
@@ -162,6 +164,7 @@ function App() {
           onNavigate={handleNavigate}
           onSearch={handleSearch}
           searchQuery={searchQuery}
+          allRecipes={allRecipes}
         />
       ) : (
         <HomePage 

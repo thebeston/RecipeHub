@@ -6,7 +6,7 @@ import { FaHeart } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { API_ENDPOINTS } from '../config/api';
 
-function FavoritesPage({ onAddRecipeClick, onEditRecipe, favorites, onToggleFavorite, currentPage, onNavigate, onSearch, searchQuery: propSearchQuery }) {
+function FavoritesPage({ onAddRecipeClick, onEditRecipe, favorites, onToggleFavorite, currentPage, onNavigate, onSearch, searchQuery: propSearchQuery, allRecipes = [] }) {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [searchQuery, setSearchQuery] = useState(propSearchQuery || '');
   const [filteredFavorites, setFilteredFavorites] = useState([]);
@@ -82,6 +82,44 @@ function FavoritesPage({ onAddRecipeClick, onEditRecipe, favorites, onToggleFavo
     } catch (err) {
       console.error('Error deleting recipe:', err);
       toast.error('Failed to delete recipe. Please try again.', {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
+  };
+
+  const handleAddToCollection = async (recipe) => {
+    try {
+      const recipeData = {
+        title: recipe.title,
+        ingredients: recipe.ingredients || [],
+        instructions: recipe.instructions || '',
+        duration: recipe.duration || 30,
+        dietaryRestrictions: recipe.dietaryRestrictions || {},
+        imageUrl: recipe.imageUrl || recipe.image || '',
+      };
+
+      const response = await fetch(API_ENDPOINTS.createRecipe, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(recipeData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast.success('Recipe added to your collection!', {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      } else {
+        throw new Error(result.error || 'Failed to add recipe');
+      }
+    } catch (err) {
+      console.error('Error adding recipe:', err);
+      toast.error(`Failed to add recipe: ${err.message}`, {
         position: "top-right",
         autoClose: 3000,
       });
@@ -188,6 +226,9 @@ function FavoritesPage({ onAddRecipeClick, onEditRecipe, favorites, onToggleFavo
                       onViewRecipe={handleViewRecipe}
                       isFavorite={true}
                       onToggleFavorite={onToggleFavorite}
+                      showEditDelete={false}
+                      onAddToCollection={handleAddToCollection}
+                      isInCollection={allRecipes.some(r => r.title.toLowerCase().trim() === recipe.title.toLowerCase().trim())}
                     />
                   </div>
                 ))}
