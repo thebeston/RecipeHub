@@ -21,6 +21,8 @@ function DiscoverPage({ onAddRecipeClick, currentPage, onNavigate, onSearch, sea
   const [addingRecipes, setAddingRecipes] = useState({});
   const [addedRecipes, setAddedRecipes] = useState(new Set()); 
   const [selectedRecipe, setSelectedRecipe] = useState(null); 
+  const [searchInput, setSearchInput] = useState('');
+  const [searching, setSearching] = useState(false);
 
   const [filters, setFilters] = useState({
     diet: [], 
@@ -76,6 +78,42 @@ function DiscoverPage({ onAddRecipeClick, currentPage, onNavigate, onSearch, sea
     } finally {
       setLoading(false);
     }
+  };
+
+  const searchRecipes = async (query) => {
+    if (!query.trim()) {
+      fetchRecipes();
+      return;
+    }
+
+    try {
+      setSearching(true);
+      setError(null);
+
+      const response = await fetch(
+        `${API_ENDPOINTS.searchSpoonacularRecipes}?query=${encodeURIComponent(query)}&number=20`
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to search recipes from Spoonacular API');
+      }
+
+      const data = await response.json();
+      setRecipes(data.results || []);
+      setFilteredRecipes(data.results || []);
+    } catch (err) {
+      console.error('Error searching recipes:', err);
+      setError(err.message);
+      toast.error(`Search failed: ${err.message}`);
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    searchRecipes(searchInput);
   };
 
   const applyFilters = () => {
@@ -298,8 +336,53 @@ function DiscoverPage({ onAddRecipeClick, currentPage, onNavigate, onSearch, sea
           <div className="card-body">
             <h5 className="card-title mb-3">
               <FaSearch className="me-2" />
-              Filter Recipes
+              Search & Filter Recipes
             </h5>
+            
+            <form onSubmit={handleSearchSubmit} className="mb-4">
+              <div className="input-group input-group-lg">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Search for recipes (e.g., pasta, chicken, tacos)..."
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                />
+                <button 
+                  className="btn btn-primary" 
+                  type="submit"
+                  disabled={searching}
+                >
+                  {searching ? (
+                    <>
+                      <FaSpinner className="fa-spin me-2" />
+                      Searching...
+                    </>
+                  ) : (
+                    <>
+                      <FaSearch className="me-2" />
+                      Search API
+                    </>
+                  )}
+                </button>
+                {searchInput && (
+                  <button
+                    className="btn btn-outline-secondary"
+                    type="button"
+                    onClick={() => {
+                      setSearchInput('');
+                      fetchRecipes();
+                    }}
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+              <small className="text-muted">
+                Search Spoonacular's database of thousands of recipes
+              </small>
+            </form>
+
             <div className="row g-3">
               
               <div className="col-md-4">

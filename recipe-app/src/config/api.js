@@ -13,6 +13,7 @@ export const API_ENDPOINTS = {
   
   // Spoonacular API (via backend proxy)
   getSpoonacularRecipes: `${API_BASE_URL}/api/spoonacular/recipes/random`,
+  searchSpoonacularRecipes: `${API_BASE_URL}/api/spoonacular/recipes/search`,
 };
 
 export default API_BASE_URL;

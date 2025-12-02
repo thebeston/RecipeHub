@@ -198,6 +198,39 @@ app.get('/api/spoonacular/recipes/random', async (req, res) => {
   }
 });
 
+app.get('/api/spoonacular/recipes/search', async (req, res) => {
+  try {
+    const apiKey = process.env.SPOONACULAR_API_KEY;
+    
+    if (!apiKey || apiKey === 'YOUR_API_KEY_HERE') {
+      return res.status(500).json({ 
+        success: false, 
+        error: 'Spoonacular API key not configured. Please add it to config.env file.' 
+      });
+    }
+
+    const query = req.query.query || '';
+    const number = req.query.number || 10;
+    const url = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&query=${encodeURIComponent(query)}&number=${number}&addRecipeInformation=true&fillIngredients=true`;
+    
+    const fetch = (await import('node-fetch')).default;
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    if (response.ok) {
+      res.json(data);
+    } else {
+      res.status(response.status).json({ 
+        success: false, 
+        error: data.message || 'Failed to search recipes from Spoonacular' 
+      });
+    }
+  } catch (error) {
+    console.error('Spoonacular search API error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
   console.log(`API endpoint: http://localhost:${PORT}/api/recipes`);
