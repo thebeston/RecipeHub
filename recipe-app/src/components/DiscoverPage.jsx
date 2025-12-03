@@ -96,8 +96,16 @@ function DiscoverPage({ onAddRecipeClick, currentPage, onNavigate, onSearch, sea
       );
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to search recipes from Spoonacular API');
+        let errorMessage = 'Failed to search recipes from Spoonacular API';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch (parseError) {
+          const textError = await response.text();
+          console.error('Non-JSON error response:', textError);
+          errorMessage = `Server error (${response.status}): Unable to search recipes`;
+        }
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();

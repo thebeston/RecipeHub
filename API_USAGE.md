@@ -26,10 +26,10 @@ Each time you:
 
 ### Important Notes:
 
-- ✅ **Viewing recipes** does NOT count (already fetched)
-- ✅ **Adding to collection** does NOT count (saved to your MongoDB)
-- ✅ **Searching/filtering** does NOT count (done client-side)
-- ❌ **Each page refresh** on Discover DOES count
+-  **Viewing recipes** does NOT count (already fetched)
+- **Adding to collection** does NOT count (saved to your MongoDB)
+- **Searching/filtering** does NOT count (done client-side)
+- **Each page refresh** on Discover DOES count
 
 ## Tips to Conserve API Calls
 
@@ -50,9 +50,9 @@ You can monitor your API usage at:
 ## What Happens When You Run Out?
 
 If you exceed 150 requests in a day:
-- ❌ The Discover page will show an error
-- ✅ Your existing recipes in Home/Favorites will still work
-- ⏰ Wait until UTC midnight for your quota to reset
+- The Discover page will show an error
+- Your existing recipes in Home/Favorites will still work
+- Wait until UTC midnight for your quota to reset
 
 ## Upgrading (Optional)
 
@@ -66,9 +66,9 @@ Visit: https://spoonacular.com/food-api/pricing
 ## Current Status
 
 With 50 recipes per load:
-- 🎯 **Optimal balance** between variety and API conservation
-- 📊 You can discover 150 new recipes per day
-- 💡 Each load gives you plenty of options to browse and add
+- **Optimal balance** between variety and API conservation
+- You can discover 150 new recipes per day
+- Each load gives you plenty of options to browse and add
 
 ---
 
