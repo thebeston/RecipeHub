@@ -3,7 +3,7 @@ import Navbar from './Navbar';
 import ConfirmModal from './ConfirmModal';
 import { FaClock, FaLeaf, FaHeart, FaRegHeart, FaEdit, FaArrowLeft, FaTrash } from 'react-icons/fa';
 
-function RecipeDetail({ recipe, onBack, onEdit, onDelete, isFavorite, onToggleFavorite, showActions = true, showDietaryTags = true }) {
+function RecipeDetail({ recipe, onBack, onEdit, onDelete, isFavorite, onToggleFavorite, showActions = true, showDietaryTags = true, showEditDelete = true }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleToggleFavorite = () => {
@@ -85,27 +85,33 @@ function RecipeDetail({ recipe, onBack, onEdit, onDelete, isFavorite, onToggleFa
                     <h1 className="card-title fw-bold mb-0">{recipe.title}</h1>
                     {showActions && (
                       <div className="d-flex gap-2">
-                        <button
-                          className="btn btn-outline-danger"
-                          onClick={handleToggleFavorite}
-                          title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-                        >
-                          {isFavorite ? <FaHeart /> : <FaRegHeart />}
-                        </button>
-                        <button
-                          className="btn btn-outline-primary"
-                          onClick={() => onEdit(recipe)}
-                          title="Edit recipe"
-                        >
-                          <FaEdit />
-                        </button>
-                        <button
-                          className="btn btn-outline-danger"
-                          onClick={handleDeleteClick}
-                          title="Delete recipe"
-                        >
-                          <FaTrash />
-                        </button>
+                        {onToggleFavorite && (
+                          <button
+                            className="btn btn-outline-danger"
+                            onClick={handleToggleFavorite}
+                            title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                          >
+                            {isFavorite ? <FaHeart /> : <FaRegHeart />}
+                          </button>
+                        )}
+                        {showEditDelete && (
+                          <>
+                            <button
+                              className="btn btn-outline-primary"
+                              onClick={() => onEdit(recipe)}
+                              title="Edit recipe"
+                            >
+                              <FaEdit />
+                            </button>
+                            <button
+                              className="btn btn-outline-danger"
+                              onClick={handleDeleteClick}
+                              title="Delete recipe"
+                            >
+                              <FaTrash />
+                            </button>
+                          </>
+                        )}
                       </div>
                     )}
                   </div>

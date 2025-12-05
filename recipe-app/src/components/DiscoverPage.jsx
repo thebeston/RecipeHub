@@ -269,8 +269,10 @@ function DiscoverPage({ onAddRecipeClick, currentPage, onNavigate, onSearch, sea
         onBack={() => setSelectedRecipe(null)}
         onEdit={null} 
         onDelete={null} 
-        onToggleFavorite={null} 
-        isFavorite={false}
+        onToggleFavorite={onToggleFavorite} 
+        isFavorite={favorites.includes(selectedRecipe._id)}
+        showActions={true}
+        showEditDelete={false}
       />
     );
   }
