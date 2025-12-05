@@ -269,10 +269,9 @@ function DiscoverPage({ onAddRecipeClick, currentPage, onNavigate, onSearch, sea
         onBack={() => setSelectedRecipe(null)}
         onEdit={null} 
         onDelete={null} 
-        onToggleFavorite={onToggleFavorite} 
-        isFavorite={favorites.includes(selectedRecipe._id)}
-        showActions={true}
-        showEditDelete={false}
+        onToggleFavorite={null} 
+        isFavorite={false}
+        showActions={false}
       />
     );
   }
@@ -483,6 +482,12 @@ function DiscoverPage({ onAddRecipeClick, currentPage, onNavigate, onSearch, sea
                           const recipeId = `spoonacular-${recipe.id}`;
                           if (onToggleFavorite) {
                             onToggleFavorite(recipeId);
+                            const isFavorite = favorites.includes(recipeId);
+                            if (isFavorite) {
+                              toast.info('Removed from favorites');
+                            } else {
+                              toast.success('Added to favorites!');
+                            }
                           }
                         }}
                         style={{ fontSize: '1.5rem' }}
