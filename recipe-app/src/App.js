@@ -68,21 +68,41 @@ function App() {
   };
 
   const handleToggleFavorite = (recipeId) => {
+    console.log('Toggling favorite for:', recipeId);
+    console.log('Current favorites:', favorites);
     setFavorites((prevFavorites) => {
       let newFavorites;
       if (prevFavorites.includes(recipeId)) {
         newFavorites = prevFavorites.filter(id => id !== recipeId);
+        console.log('Removing from favorites');
       } else {
         newFavorites = [...prevFavorites, recipeId];
+        console.log('Adding to favorites');
       }
 
       localStorage.setItem('favoriteRecipes', JSON.stringify(newFavorites));
+      console.log('New favorites:', newFavorites);
       return newFavorites;
     });
   };
 
   const getFavoriteRecipes = () => {
-    return allRecipes.filter(recipe => favorites.includes(recipe._id));
+    const mongoRecipes = allRecipes.filter(recipe => favorites.includes(recipe._id));
+    
+    const spoonacularFavoriteIds = favorites.filter(id => id.startsWith('spoonacular-'));
+    const spoonacularRecipes = [];
+    
+    const savedSpoonacularRecipes = localStorage.getItem('spoonacularFavoriteRecipes');
+    if (savedSpoonacularRecipes) {
+      const spoonacularData = JSON.parse(savedSpoonacularRecipes);
+      spoonacularFavoriteIds.forEach(id => {
+        if (spoonacularData[id]) {
+          spoonacularRecipes.push(spoonacularData[id]);
+        }
+      });
+    }
+    
+    return [...mongoRecipes, ...spoonacularRecipes];
   };
 
   const handleRecipeSubmit = async (recipeData) => {

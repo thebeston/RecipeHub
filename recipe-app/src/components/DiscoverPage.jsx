@@ -481,9 +481,43 @@ function DiscoverPage({ onAddRecipeClick, currentPage, onNavigate, onSearch, sea
                           e.stopPropagation();
                           const recipeId = `spoonacular-${recipe.id}`;
                           if (onToggleFavorite) {
+                            const wasAlreadyFavorite = favorites.includes(recipeId);
+                            
+                            const savedSpoonacularRecipes = localStorage.getItem('spoonacularFavoriteRecipes');
+                            const spoonacularData = savedSpoonacularRecipes ? JSON.parse(savedSpoonacularRecipes) : {};
+                            
+                            if (!wasAlreadyFavorite) {
+                              spoonacularData[recipeId] = {
+                                _id: recipeId,
+                                title: recipe.title,
+                                ingredients: recipe.extendedIngredients.map(ing => ing.original),
+                                dietaryRestrictions: {
+                                  vegetarian: recipe.vegetarian || false,
+                                  vegan: recipe.vegan || false,
+                                  glutenFree: recipe.glutenFree || false,
+                                  dairyFree: recipe.dairyFree || false,
+                                },
+                                duration: recipe.readyInMinutes.toString(),
+                                instructions: stripHtmlTags(
+                                  recipe.instructions || 
+                                  recipe.analyzedInstructions?.[0]?.steps
+                                    .map((step, index) => `${index + 1}. ${step.step}`)
+                                    .join('\n') || 
+                                  'No instructions available.'
+                                ),
+                                imageUrl: recipe.image || '',
+                                servings: recipe.servings,
+                                createdAt: new Date().toISOString(),
+                                isFromSpoonacular: true,
+                              };
+                            } else {
+                              delete spoonacularData[recipeId];
+                            }
+                            
+                            localStorage.setItem('spoonacularFavoriteRecipes', JSON.stringify(spoonacularData));
+                            
                             onToggleFavorite(recipeId);
-                            const isFavorite = favorites.includes(recipeId);
-                            if (isFavorite) {
+                            if (wasAlreadyFavorite) {
                               toast.info('Removed from favorites');
                             } else {
                               toast.success('Added to favorites!');
